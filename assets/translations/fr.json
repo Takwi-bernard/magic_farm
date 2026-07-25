@@ -1,0 +1,87 @@
+{
+  "app_name": "Magic Farm",
+  "welcome": "Bienvenue",
+  "continue": "Continuer",
+  "login": "Se connecter",
+  "signup": "Créer un compte",
+  "email": "E-mail",
+  "password": "Mot de passe",
+  "confirm_password": "Confirmer le mot de passe",
+  "forgot_password": "Mot de passe oublié ?",
+  "logout": "Se déconnecter",
+  "home": "Accueil",
+  "create_post": "Créer une annonce",
+  "favorites": "Favoris",
+  "profile": "Profil",
+  "settings": "Paramètres",
+  "search": "Rechercher des produits...",
+  "buyer": "Acheteur",
+  "farmer": "Agriculteur",
+  "language": "Langue",
+  "english": "Anglais",
+  "french": "Français",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "retry": "Réessayer",
+
+  "welcome_title": "Bienvenue sur Magic Farm",
+  "welcome_description": "Connectez-vous directement avec des agriculteurs et des acheteurs de confiance.",
+
+  "market_title": "Achetez et vendez facilement",
+  "market_description": "Créez des annonces et découvrez des produits frais près de chez vous.",
+
+  "chat_title": "Communication sécurisée",
+  "chat_description": "Discutez en privé grâce à une messagerie chiffrée.",
+
+  "language_title": "Choisissez votre langue",
+  "language_description": "Utilisez Magic Farm en anglais ou en français.",
+
+  "get_started": "Commencer",
+  "next": "Suivant",
+  "skip": "Passer",
+
+  "splash_tagline": "Connecter agriculteurs et acheteurs",
+
+  "email_hint": "Entrez votre e-mail",
+  "password_hint": "Entrez votre mot de passe",
+  "err_email_required": "L'e-mail est requis",
+  "err_email_invalid": "Entrez un e-mail valide",
+  "err_password_required": "Le mot de passe est requis",
+  "err_password_min": "Minimum 6 caractères",
+
+  "full_name": "Nom complet",
+  "full_name_hint": "Entrez votre nom complet",
+  "err_fullname_required": "Le nom complet est requis",
+  "err_fullname_short": "Le nom est trop court",
+
+  "phone_number": "Numéro de téléphone",
+  "phone_number_hint": "Entrez votre numéro de téléphone",
+  "err_phone_required": "Le numéro de téléphone est requis",
+
+  "account_type": "Type de compte",
+  "err_confirm_password_required": "Veuillez confirmer votre mot de passe",
+  "err_passwords_mismatch": "Les mots de passe ne correspondent pas",
+
+  "reset_password": "Réinitialiser le mot de passe",
+  "reset_password_description": "Entrez l'adresse e-mail associée à votre compte. Nous vous enverrons un lien de réinitialisation.",
+  "send_reset_link": "Envoyer le lien",
+  "reset_link_sent": "Un lien de réinitialisation a été envoyé à votre e-mail.",
+
+  "continue_with_google": "Continuer avec Google",
+  "signup_with_google": "S'inscrire avec Google",
+  "or_divider": "OU",
+
+  "welcome_back": "Bon retour",
+  "create_account_heading": "Créer un compte",
+  "login_subtitle": "Connectez-vous pour continuer sur Magic Farm",
+  "register_subtitle": "Créez un compte pour commencer",
+  "dont_have_account": "Vous n'avez pas de compte ? ",
+  "already_have_account": "Vous avez déjà un compte ? ",
+
+  "login_failed": "Échec de la connexion",
+  "registration_failed": "Échec de l'inscription",
+  "google_signin_failed": "Connexion Google",
+  "success": "Succès",
+  "profile_updated": "Profil mis à jour avec succès.",
+  "password_updated": "Mot de passe mis à jour avec succès."
+}

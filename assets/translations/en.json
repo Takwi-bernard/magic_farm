@@ -1,0 +1,86 @@
+{
+  "app_name": "Magic Farm",
+  "welcome": "Welcome",
+  "continue": "Continue",
+  "login": "Sign In",
+  "signup": "Create Account",
+  "email": "Email",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "forgot_password": "Forgot Password?",
+  "logout": "Logout",
+  "home": "Home",
+  "create_post": "Create Post",
+  "favorites": "Favorites",
+  "profile": "Profile",
+  "settings": "Settings",
+  "search": "Search products...",
+  "buyer": "Buyer",
+  "farmer": "Farmer",
+  "language": "Language",
+  "english": "English",
+  "french": "French",
+  "save": "Save",
+  "cancel": "Cancel",
+  "retry": "Retry",
+  "welcome_title": "Welcome to Magic Farm",
+  "welcome_description": "Connect directly with trusted farmers and buyers.",
+
+  "market_title": "Buy & Sell Easily",
+  "market_description": "Create listings and discover fresh products near you.",
+
+  "chat_title": "Secure Communication",
+  "chat_description": "Chat privately using encrypted messaging.",
+
+  "language_title": "Choose Your Language",
+  "language_description": "Use Magic Farm in English or French.",
+
+  "get_started": "Get Started",
+  "next": "Next",
+  "skip": "Skip",
+
+  "splash_tagline": "Connecting Farmers & Buyers",
+
+  "email_hint": "Enter your email",
+  "password_hint": "Enter your password",
+  "err_email_required": "Email is required",
+  "err_email_invalid": "Enter a valid email",
+  "err_password_required": "Password is required",
+  "err_password_min": "Minimum 6 characters",
+
+  "full_name": "Full Name",
+  "full_name_hint": "Enter your full name",
+  "err_fullname_required": "Full name is required",
+  "err_fullname_short": "Name is too short",
+
+  "phone_number": "Phone Number",
+  "phone_number_hint": "Enter phone number",
+  "err_phone_required": "Phone number is required",
+
+  "account_type": "Account Type",
+  "err_confirm_password_required": "Please confirm your password",
+  "err_passwords_mismatch": "Passwords do not match",
+
+  "reset_password": "Reset Password",
+  "reset_password_description": "Enter the email address associated with your account. We will send you a password reset link.",
+  "send_reset_link": "Send Reset Link",
+  "reset_link_sent": "A password reset link has been sent to your email.",
+
+  "continue_with_google": "Continue with Google",
+  "signup_with_google": "Sign up with Google",
+  "or_divider": "OR",
+
+  "welcome_back": "Welcome Back",
+  "create_account_heading": "Create Account",
+  "login_subtitle": "Sign in to continue to Magic Farm",
+  "register_subtitle": "Create an account to get started",
+  "dont_have_account": "Don't have an account? ",
+  "already_have_account": "Already have an account? ",
+
+  "login_failed": "Login Failed",
+  "registration_failed": "Registration Failed",
+  "google_signin_failed": "Google Sign In",
+  "success": "Success",
+  "profile_updated": "Profile updated successfully.",
+  "password_updated": "Password updated successfully."
+}
