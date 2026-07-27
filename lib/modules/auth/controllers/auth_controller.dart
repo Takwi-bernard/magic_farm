@@ -183,7 +183,12 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
+      // Native sign-in (unlike the old browser-based OAuth flow)
+      // returns as soon as login actually completes — no need to wait
+      // for a deep link — so navigation happens directly here.
       await repository.signInWithGoogle();
+
+      Get.offAllNamed(AppRoutes.home);
     } catch (e) {
       Get.snackbar(
         "google_signin_failed".tr,

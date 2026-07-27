@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepository {
@@ -91,23 +91,45 @@ class AuthRepository {
   }
 
   //==========================================================
-  // GOOGLE SIGN IN
+  // GOOGLE SIGN IN (native — Google account picker, no browser)
   //==========================================================
 
-  Future<void> signInWithGoogle() async {
+  Future<AuthResponse> signInWithGoogle() async {
     try {
-      await auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: kIsWeb
-            ? null
-            : 'io.supabase.flutterquickstart://login-callback',
-      );
+      final googleUser = await GoogleSignIn.instance.authenticate();
+
+      final authorization = await googleUser.authorizationClient
+          .authorizationForScopes(['email', 'profile']);
+
+      final idToken = googleUser.authentication.idToken;
+      final accessToken = authorization?.accessToken;
+
+      if (idToken == null) {
+        throw Exception("No ID token returned from Google.");
+      }
+
+      return await auth
+          .signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      )
+          .timeout(_networkTimeout);
+    } on GoogleSignInException catch (e) {
+      // Covers the user simply cancelling the account picker — not a
+      // real error, so no need to show a scary message for that case.
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        throw Exception("Sign in cancelled.");
+      }
+      throw Exception("Google Sign In failed: ${e.description}");
     } on AuthException catch (e) {
       throw Exception(e.message);
-    } catch (_) {
+    } on TimeoutException {
       throw Exception(
-        "Google Sign In failed.",
+        "Request timed out. Please check your connection and try again.",
       );
+    } catch (_) {
+      throw Exception("Google Sign In failed.");
     }
   }
 

@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../app/translations/app_translations.dart';
+import '../modules/auth/auth_gate.dart';
 
 class Bootstrap {
   Bootstrap._();
@@ -39,9 +42,33 @@ class Bootstrap {
       } on TimeoutException {
         _logger.w(
           "Supabase.initialize() timed out — likely poor/no network. "
-          "Continuing app boot in offline mode.",
+              "Continuing app boot in offline mode.",
         );
       }
+
+      // GoogleSignIn v7 requires this one-time initialize() before
+      // .authenticate() can be called anywhere else in the app.
+      // serverClientId (the Web client) is what makes Google issue a
+      // token Supabase can actually verify — Android's own client is
+      // matched automatically via package name + SHA-1, so it isn't
+      // passed here directly.
+      try {
+        await GoogleSignIn.instance.initialize(
+          clientId: kIsWeb || defaultTargetPlatform == TargetPlatform.iOS
+              ? dotenv.env['GOOGLE_IOS_CLIENT_ID']
+              : null,
+          serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
+        );
+      } catch (e) {
+        _logger.w("GoogleSignIn initialize failed: $e");
+      }
+
+      // Starts listening for Supabase auth state changes app-wide.
+      // Kept as a safety net — native Google sign-in below navigates
+      // directly on success, but this still matters if you ever add
+      // back a browser-based OAuth provider, which completes async
+      // via deep link instead of a direct return value.
+      AuthGate.instance.start();
 
       _logger.i("Bootstrap initialized successfully.");
     } catch (e, stackTrace) {
