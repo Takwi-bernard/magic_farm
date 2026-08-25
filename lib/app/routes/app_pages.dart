@@ -10,7 +10,15 @@ import '../../modules/auth/bindings/auth_binding.dart';
 import '../../modules/auth/pages/auth_page.dart';
 import '../../modules/auth/widgets/forgot_password.dart';
 
+import '../../modules/home/bindings/home_binding.dart';
+import '../../modules/home/pages/dashboard_page.dart';
+
+import '../../modules/ai/ai_binding.dart';
+import '../../modules/ai/ai_page.dart';
+
 import 'app_routes.dart';
+import '../../modules/create_post/pages/create_post_page.dart';
+import '../../modules/create_post/bindings/create_post_binding.dart';
 
 class AppPages {
   AppPages._();
@@ -42,15 +50,30 @@ class AppPages {
       binding: AuthBinding(),
     ),
 
-    // Uses AuthBinding too, since it needs AuthController for its
-    // form (forgotEmailController, sendResetPasswordEmail(), etc.).
+
     GetPage(
       name: AppRoutes.forgotPassword,
       page: () => const ForgotPasswordPage(),
       binding: AuthBinding(),
     ),
 
-    // home, product-details, etc. get added here the same way, one
-    // GetPage per AppRoutes constant, as each module is built.
+    GetPage(
+      name: AppRoutes.home,
+      page: () => const DashboardPage(),
+      binding: HomeBinding(),
+    ),
+
+
+    GetPage(
+      name: AppRoutes.ai,
+      page: () => const AIPage(),
+      binding: AIBinding(),
+    ),
+  GetPage(
+      name: AppRoutes.createPost,
+      page: ()=> const CreatePostPage(),
+      binding: CreatePostBinding(),
+
+  )
   ];
 }

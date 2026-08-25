@@ -1,46 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'app_colors.dart';
 
 class AppTextStyles {
   AppTextStyles._();
 
-  // New: nothing in the existing scale covered a hero/display size
-  // (e.g. the splash screen's app name). Added rather than reusing
-  // `headline` at an overridden size, so the type scale stays
-  // intentional instead of ad-hoc overrides scattered per screen.
-  static const TextStyle display = TextStyle(
+  static final TextStyle display = GoogleFonts.plusJakartaSans(
     fontSize: 34,
     fontWeight: FontWeight.w800,
     letterSpacing: -.5,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle headline = TextStyle(
+  static final TextStyle headline = GoogleFonts.plusJakartaSans(
     fontSize: 28,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.w800,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle title = TextStyle(
+  static final TextStyle title = GoogleFonts.plusJakartaSans(
     fontSize: 20,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle body = TextStyle(
+  static final TextStyle body = GoogleFonts.plusJakartaSans(
     fontSize: 16,
-    fontWeight: FontWeight.normal,
+    fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle caption = TextStyle(
+  static final TextStyle caption = GoogleFonts.plusJakartaSans(
     fontSize: 14,
+    fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
   );
 
-  static const TextStyle button = TextStyle(
+  static final TextStyle button = GoogleFonts.plusJakartaSans(
     fontSize: 16,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     color: Colors.white,
   );
 }

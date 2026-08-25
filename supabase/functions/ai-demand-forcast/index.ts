@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { askOpenAI, corsHeaders, languageInstruction } from "../shared/openai.ts";
+import { askAI, corsHeaders, languageInstruction } from "../shared/ai.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -21,21 +21,13 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
-      // Service role key — this function runs server-side only, never
-      // exposed to the app, so it's safe to use here (unlike the
-      // anon key, this bypasses RLS, which is fine for read-only
-      // aggregation like this).
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // NOTE: placeholder query against a "products" table with
-    // name/price/created_at columns — adjust once your real
-    // Home/Market schema exists. The point stands regardless of exact
-    // column names: pull real history, never let the model guess.
     const { data, error } = await supabase
       .from("products")
       .select("price, created_at")
-      .ilike("name", `%${product_name}%`)
+      .ilike("title", `%${product_name}%`)
       .order("created_at", { ascending: false })
       .limit(20);
 
@@ -52,13 +44,11 @@ Deno.serve(async (req) => {
     const userPrompt =
       `Product: ${product_name}\nData: ${dataSummary}\n\nGive the farmer a short, practical read on demand for this product.`;
 
-    const text = await askOpenAI(systemPrompt, userPrompt);
+    const text = await askAI(systemPrompt, userPrompt);
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-
-
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), {
       status: 500,

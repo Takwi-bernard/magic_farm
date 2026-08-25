@@ -5,19 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Every AI feature routes through a Supabase Edge Function — never
 /// straight to OpenAI. The OpenAI API key must never exist inside the
 /// Flutter app; it lives only in the Edge Function's environment.
-///
-/// This is one concrete class, not an abstract interface + separate
-/// implementation + separate service wrapper (that split existed in
-/// the previous version across ai_repository.dart, openai_repository.dart,
-/// and ai_service.dart with no real difference in behavior between
-/// them). For a module this size, that's three files doing the job of
-/// one — collapsed here on purpose.
-///
-/// NOTE: the four Edge Functions referenced below ('ai-chat',
-/// 'ai-demand-forecast', 'ai-listing-helper', 'ai-price-suggestion')
-/// are separate Deno/TypeScript files you deploy to Supabase — not
-/// something that lives in this Flutter project. Happy to write those
-/// next once this side is settled.
 class AIRepository {
   final SupabaseClient _client = Supabase.instance.client;
 
@@ -85,9 +72,38 @@ class AIRepository {
         'Request timed out. Please check your connection and try again.',
       );
     } on FunctionException catch (e) {
-      throw Exception(e.details?.toString() ?? 'AI request failed.');
+      throw Exception(_friendlyMessage(e));
     } catch (_) {
       throw Exception('AI request failed. Please try again.');
     }
+  }
+
+  // Was previously just calling e.details.toString() — that dumped
+  // the raw error JSON/map straight onto the screen (a farmer seeing
+  // "insufficient_quota" / "credit_balance_exhausted" means nothing
+  // to them). This extracts a real message where possible, and
+  // recognizes a couple of specific, likely-to-recur cases with a
+  // clean explanation instead of ever showing raw JSON.
+  String _friendlyMessage(FunctionException e) {
+    final details = e.details;
+    String raw = '';
+
+    if (details is Map && details['error'] is String) {
+      raw = details['error'] as String;
+    } else if (details != null) {
+      raw = details.toString();
+    }
+
+    if (raw.contains('insufficient_quota') ||
+        raw.contains('credit_balance_exhausted')) {
+      return 'AI features are temporarily unavailable. Please try again later.';
+    }
+
+    if (raw.contains('rate_limit')) {
+      return 'The AI assistant is busy right now. Please try again in a moment.';
+    }
+
+    // Anything else unrecognized — still never show the raw JSON.
+    return 'AI request failed. Please try again.';
   }
 }

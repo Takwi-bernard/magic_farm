@@ -9,6 +9,8 @@ class HomeRepository {
 
   static const int pageSize = 20;
 
+  String? get _currentUserId => _client.auth.currentUser?.id;
+
   // ===========================
   // PRODUCTS
   // ===========================
@@ -53,9 +55,17 @@ class HomeRepository {
         ''')
         .eq('status', 'active')
         .range(
-          page * pageSize,
-          page * pageSize + pageSize - 1,
-        );
+      page * pageSize,
+      page * pageSize + pageSize - 1,
+    );
+
+    // Scopes the embedded favorites array to just the current user's
+    // row (if any), instead of pulling every user who ever favourited
+    // each product. Was previously unscoped — wasteful, and there's
+    // no reason the app needs to know who else favourited something.
+    if (_currentUserId != null) {
+      query = query.eq('favorites.user_id', _currentUserId!);
+    }
 
     if (search != null && search.trim().isNotEmpty) {
       query = query.textSearch(
@@ -64,40 +74,24 @@ class HomeRepository {
       );
     }
 
-    if (categoryId != null &&
-        categoryId.isNotEmpty) {
-      query = query.eq(
-        'category_id',
-        categoryId,
-      );
+    if (categoryId != null && categoryId.isNotEmpty) {
+      query = query.eq('category_id', categoryId);
     }
 
-    if (cityId != null &&
-        cityId.isNotEmpty) {
-      query = query.eq(
-        'city_id',
-        cityId,
-      );
+    if (cityId != null && cityId.isNotEmpty) {
+      query = query.eq('city_id', cityId);
     }
 
     if (minPrice != null) {
-      query = query.gte(
-        'price',
-        minPrice,
-      );
+      query = query.gte('price', minPrice);
     }
 
     if (maxPrice != null) {
-      query = query.lte(
-        'price',
-        maxPrice,
-      );
+      query = query.lte('price', maxPrice);
     }
 
     query = query.order(
-      newestFirst
-          ? 'created_at'
-          : 'price',
+      newestFirst ? 'created_at' : 'price',
       ascending: !newestFirst,
     );
 
@@ -107,11 +101,35 @@ class HomeRepository {
   }
 
   // ===========================
+  // SEARCH SUGGESTIONS
+  //
+  // Deliberately separate from getProducts — runs on every keystroke
+  // (debounced), so it stays small and fast: 5 results, 3 columns,
+  // no joins.
+  // ===========================
+
+  Future<List<Map<String, dynamic>>> getSearchSuggestions(
+      String query,
+      ) async {
+    if (query.trim().isEmpty) return [];
+
+    final result = await _client
+        .from('products')
+        .select('id, title, price')
+        .eq('status', 'active')
+        .ilike('title', '%${query.trim()}%')
+        .order('created_at', ascending: false)
+        .limit(5);
+
+    return List<Map<String, dynamic>>.from(result);
+  }
+
+  // ===========================
   // FEATURED PRODUCTS
   // ===========================
 
   Future<List<Map<String, dynamic>>> getFeaturedProducts() async {
-    final result = await _client
+    dynamic query = _client
         .from('products')
         .select('''
           *,
@@ -132,14 +150,23 @@ class HomeRepository {
           ),
           product_images(
             image_url
+          ),
+          favorites(
+            user_id
           )
         ''')
         .eq('status', 'active')
-        .eq('is_featured', true)
-        .order(
-          'created_at',
-          ascending: false,
-        )
+        .eq('is_featured', true);
+
+    // Was missing the favorites join entirely before — meant the
+    // heart icon could never show as filled anywhere in the "Fresh
+    // Picks" row, regardless of actual favorite status.
+    if (_currentUserId != null) {
+      query = query.eq('favorites.user_id', _currentUserId!);
+    }
+
+    final result = await query
+        .order('created_at', ascending: false)
         .limit(10);
 
     return List<Map<String, dynamic>>.from(result);
@@ -152,7 +179,7 @@ class HomeRepository {
   Future<List<Map<String, dynamic>>> getNearbyProducts({
     required String cityId,
   }) async {
-    final result = await _client
+    dynamic query = _client
         .from('products')
         .select('''
           *,
@@ -164,15 +191,21 @@ class HomeRepository {
           ),
           product_images(
             image_url
+          ),
+          favorites(
+            user_id
           )
         ''')
         .eq('status', 'active')
-        .eq('city_id', cityId)
-        .order(
-          'created_at',
-          ascending: false,
-        )
-        .limit(20);
+        .eq('city_id', cityId);
+
+    // Same missing-join bug as getFeaturedProducts, fixed the same way.
+    if (_currentUserId != null) {
+      query = query.eq('favorites.user_id', _currentUserId!);
+    }
+
+    final result =
+    await query.order('created_at', ascending: false).limit(20);
 
     return List<Map<String, dynamic>>.from(result);
   }
@@ -196,10 +229,7 @@ class HomeRepository {
   // ===========================
 
   Future<List<Map<String, dynamic>>> getCities() async {
-    final result = await _client
-        .from('cities')
-        .select()
-        .order('name');
+    final result = await _client.from('cities').select().order('name');
 
     return List<Map<String, dynamic>>.from(result);
   }
@@ -220,26 +250,18 @@ class HomeRepository {
         .maybeSingle();
 
     if (existing == null) {
-      await _client
-          .from('favorites')
-          .insert({
+      await _client.from('favorites').insert({
         'user_id': userId,
         'product_id': productId,
       });
     } else {
-      await _client
-          .from('favorites')
-          .delete()
-          .eq(
-            'id',
-            existing['id'],
-          );
+      await _client.from('favorites').delete().eq('id', existing['id']);
     }
   }
 
   Future<List<Map<String, dynamic>>> getFavouriteProducts(
-    String userId,
-  ) async {
+      String userId,
+      ) async {
     final result = await _client
         .from('favorites')
         .select('''
@@ -254,14 +276,20 @@ class HomeRepository {
             ),
             product_images(
               image_url
+            ),
+            favorites(
+              user_id
             )
           )
         ''')
-        .eq(
-          'user_id',
-          userId,
-        );
+        .eq('user_id', userId);
 
+    // Every nested product's own `favorites` embed now includes this
+    // same user's row too (it has to — that's how it ended up in this
+    // query result in the first place), so ProductCard's heart shows
+    // correctly filled here without any special-casing — previously
+    // this nested select didn't include the favorites join at all,
+    // so hearts on the Favorites page itself showed as empty.
     return List<Map<String, dynamic>>.from(result);
   }
 
@@ -269,10 +297,8 @@ class HomeRepository {
   // PRODUCT DETAILS
   // ===========================
 
-  Future<Map<String, dynamic>> getProduct(
-    String productId,
-  ) async {
-    final result = await _client
+  Future<Map<String, dynamic>> getProduct(String productId) async {
+    dynamic query = _client
         .from('products')
         .select('''
           *,
@@ -287,10 +313,18 @@ class HomeRepository {
           ),
           product_images(
             *
+          ),
+          favorites(
+            user_id
           )
         ''')
-        .eq('id', productId)
-        .single();
+        .eq('id', productId);
+
+    if (_currentUserId != null) {
+      query = query.eq('favorites.user_id', _currentUserId!);
+    }
+
+    final result = await query.single();
 
     return Map<String, dynamic>.from(result);
   }
@@ -299,14 +333,10 @@ class HomeRepository {
   // SHARE / VIEWS
   // ===========================
 
-  Future<void> incrementViews(
-    String productId,
-  ) async {
+  Future<void> incrementViews(String productId) async {
     await _client.rpc(
       'increment_product_views',
-      params: {
-        'product_id': productId,
-      },
+      params: {'product_id': productId},
     );
   }
 

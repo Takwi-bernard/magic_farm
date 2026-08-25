@@ -29,5 +29,7 @@ abstract class AppRoutes {
   static const chat = "/chat";
 
   static const admin = "/admin";
+  static const ai = "/ai";
+
 
 }

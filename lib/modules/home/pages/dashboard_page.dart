@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
-import 'explore_page.dart';
 import 'home_page.dart';
+import 'favorites_page.dart';
+import '../widgets/home_bottom_navigation.dart';
 
-// These pages will be created next
+import '../../create_post/bindings/create_post_binding.dart';
+import '../../create_post/controllers/create_post_controller.dart';
 import '../../create_post/pages/create_post_page.dart';
-import '../../orders/pages/orders_page.dart';
-import '../../messages/pages/messages_page.dart';
+import '../../orders/pages/order_page.dart';
+import '../../messages/pages/message_page.dart';
 import '../../profile/pages/profile_page.dart';
 
 class DashboardPage extends GetView<HomeController> {
@@ -16,13 +18,22 @@ class DashboardPage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    // CreatePostPage is built directly as a widget inside IndexedStack
+    // below, not navigated to via Get.toNamed() — and GetX bindings
+    // ONLY fire on named-route navigation. Without this, GetView<
+    // CreatePostController> inside CreatePostPage would throw "not
+    // found" the moment a farmer opened that tab, since nothing would
+    // have ever registered the controller. Guarded so it only runs
+    // once even though build() can be called many times.
+    if (controller.isFarmer && !Get.isRegistered<CreatePostController>()) {
+      CreatePostBinding().dependencies();
+    }
+
     return Obx(() {
       final pages = [
         const HomePage(),
-        const ExplorePage(),
-        controller.isFarmer
-            ? const CreatePostPage()
-            : const OrdersPage(),
+        const FavoritesPage(),
+        controller.isFarmer ? const CreatePostPage() : const OrdersPage(),
         const MessagesPage(),
         const ProfilePage(),
       ];
@@ -32,43 +43,7 @@ class DashboardPage extends GetView<HomeController> {
           index: controller.currentIndex.value,
           children: pages,
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: controller.currentIndex.value,
-          onDestinationSelected: controller.changeTab,
-          destinations: [
-            const NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: "Home",
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.search_outlined),
-              selectedIcon: Icon(Icons.search),
-              label: "Explore",
-            ),
-            controller.isFarmer
-                ? const NavigationDestination(
-                    icon: Icon(Icons.add_box_outlined),
-                    selectedIcon: Icon(Icons.add_box),
-                    label: "Create",
-                  )
-                : const NavigationDestination(
-                    icon: Icon(Icons.shopping_bag_outlined),
-                    selectedIcon: Icon(Icons.shopping_bag),
-                    label: "Orders",
-                  ),
-            const NavigationDestination(
-              icon: Icon(Icons.chat_bubble_outline),
-              selectedIcon: Icon(Icons.chat),
-              label: "Messages",
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: "Profile",
-            ),
-          ],
-        ),
+        bottomNavigationBar: const HomeBottomNavigation(),
       );
     });
   }

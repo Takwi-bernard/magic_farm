@@ -32,7 +32,7 @@ class MagicFarmApp extends StatelessWidget {
 
           fallbackLocale: const Locale("en"),
 
-          initialRoute: AppRoutes.login,
+          initialRoute: AppRoutes.splash,
 
           getPages: AppPages.routes,
 
