@@ -21,7 +21,10 @@ class RegisterForm extends GetView<AuthController> {
             decoration: InputDecoration(
               labelText: "full_name".tr,
               hintText: "full_name_hint".tr,
-              prefixIcon: const Icon(Icons.person_outline, color: AppColors.primary,),
+              prefixIcon: const Icon(
+                Icons.person_outline,
+                color: AppColors.primary,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -57,7 +60,10 @@ class RegisterForm extends GetView<AuthController> {
             decoration: InputDecoration(
               labelText: "email".tr,
               hintText: "email_hint".tr,
-              prefixIcon: const Icon(Icons.email_outlined, color: AppColors.primary,),
+              prefixIcon: const Icon(
+                Icons.email_outlined,
+                color: AppColors.primary,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -93,7 +99,10 @@ class RegisterForm extends GetView<AuthController> {
             decoration: InputDecoration(
               labelText: "phone_number".tr,
               hintText: "phone_number_hint".tr,
-              prefixIcon: const Icon(Icons.phone_outlined,color: AppColors.primary,),
+              prefixIcon: const Icon(
+                Icons.phone_outlined,
+                color: AppColors.primary,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -120,11 +129,14 @@ class RegisterForm extends GetView<AuthController> {
 
           /// Role
           Obx(
-                () => DropdownButtonFormField<String>(
+            () => DropdownButtonFormField<String>(
               initialValue: controller.selectedRole.value,
               decoration: InputDecoration(
                 labelText: "account_type".tr,
-                prefixIcon: const Icon(Icons.groups_outlined,color: AppColors.primary,),
+                prefixIcon: const Icon(
+                  Icons.groups_outlined,
+                  color: AppColors.primary,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -161,19 +173,23 @@ class RegisterForm extends GetView<AuthController> {
 
           /// Password
           Obx(
-                () => TextFormField(
+            () => TextFormField(
               controller: controller.registerPasswordController,
               obscureText: controller.hideRegisterPassword.value,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
                 labelText: "password".tr,
-                prefixIcon: const Icon(Icons.lock_outline ,color: AppColors.primary,),
+                prefixIcon: const Icon(
+                  Icons.lock_outline,
+                  color: AppColors.primary,
+                ),
                 suffixIcon: IconButton(
                   onPressed: controller.toggleRegisterPassword,
                   icon: Icon(
                     controller.hideRegisterPassword.value
                         ? Icons.visibility_off
-                        : Icons.visibility,color: AppColors.primary,
+                        : Icons.visibility,
+                    color: AppColors.primary,
                   ),
                 ),
                 border: OutlineInputBorder(
@@ -206,19 +222,23 @@ class RegisterForm extends GetView<AuthController> {
 
           /// Confirm Password
           Obx(
-                () => TextFormField(
+            () => TextFormField(
               controller: controller.confirmPasswordController,
               obscureText: controller.hideConfirmPassword.value,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
                 labelText: "confirm_password".tr,
-                prefixIcon: const Icon(Icons.lock_outline,color: AppColors.primary,),
+                prefixIcon: const Icon(
+                  Icons.lock_outline,
+                  color: AppColors.primary,
+                ),
                 suffixIcon: IconButton(
                   onPressed: controller.toggleConfirmPassword,
                   icon: Icon(
                     controller.hideConfirmPassword.value
                         ? Icons.visibility_off
-                        : Icons.visibility,color: AppColors.primary,
+                        : Icons.visibility,
+                    color: AppColors.primary,
                   ),
                 ),
                 border: OutlineInputBorder(
@@ -257,9 +277,10 @@ class RegisterForm extends GetView<AuthController> {
             width: double.infinity,
             height: 55,
             child: Obx(
-                  () => ElevatedButton(
-                onPressed:
-                controller.isLoading.value ? null : controller.register,
+              () => ElevatedButton(
+                onPressed: controller.isLoading.value
+                    ? null
+                    : controller.register,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
@@ -270,21 +291,21 @@ class RegisterForm extends GetView<AuthController> {
                 ),
                 child: controller.isLoading.value
                     ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
-                )
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
+                      )
                     : Text(
-                  "signup".tr.toUpperCase(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    letterSpacing: 1,
-                  ),
-                ),
+                        "signup".tr.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          letterSpacing: 1,
+                        ),
+                      ),
               ),
             ),
           ),

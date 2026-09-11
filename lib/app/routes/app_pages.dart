@@ -19,7 +19,10 @@ import '../../modules/ai/ai_page.dart';
 import 'app_routes.dart';
 import '../../modules/create_post/pages/create_post_page.dart';
 import '../../modules/create_post/bindings/create_post_binding.dart';
-
+import '../../modules/product_details/pages/product_details_page.dart';
+import '../../modules/product_details/bindings/product_details_binding.dart';
+import '../../modules/seller_profile/pages/seller_profile_page.dart';
+import '../../modules/seller_profile/bindings/seller_profile_binding.dart'; 
 class AppPages {
   AppPages._();
 
@@ -74,6 +77,27 @@ class AppPages {
       page: ()=> const CreatePostPage(),
       binding: CreatePostBinding(),
 
-  )
+  ),
+    // Was never registered despite ProductCard calling
+    // Get.toNamed(AppRoutes.productDetails) since the very first
+    // version of that widget — every product tap has been silently
+    // going nowhere this whole time.
+    GetPage(
+      name: AppRoutes.productDetails,
+      page: () => const ProductDetailsPage(),
+      binding: ProductDetailsBinding(),
+    ),
+ 
+
+ GetPage(
+      name: AppRoutes.sellerProfile,
+      page: () => const SellerProfilePage(),
+      binding: SellerProfileBinding(),
+    ),
+    // orders, chat, seller-profile, etc. get added here the same
+    // way, one GetPage per AppRoutes constant, as each module is
+    // built for real.
+  
+
   ];
 }

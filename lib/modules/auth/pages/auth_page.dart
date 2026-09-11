@@ -93,7 +93,7 @@ class _LeftPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const FloatingLogo(
-              image: "assets/images/app_logo.jpeg",
+              image: "assets/images/app_logo.png",
               size: 80,
               fit: BoxFit.cover,
               useCircleFrame: true,

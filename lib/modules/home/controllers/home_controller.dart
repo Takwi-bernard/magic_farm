@@ -124,11 +124,20 @@ class HomeController extends GetxController {
 
       products.addAll(result);
       currentPage.value++;
-    } catch (e) {
-      // Don't clear whatever's already loaded — showing stale/cached
-      // products is better than showing nothing on a bad connection.
-      _showLoadError();
-    }
+    } 
+     catch (e, stackTrace) {
+  debugPrint('========== LOAD PRODUCTS ERROR ==========');
+  debugPrint('ERROR: $e');
+  debugPrint('STACK TRACE: $stackTrace');
+  debugPrint('==========================================');
+
+  Get.snackbar(
+    'Products Error',
+    e.toString().replaceFirst('Exception: ', ''),
+    snackPosition: SnackPosition.BOTTOM,
+    duration: const Duration(seconds: 10),
+  );
+}
   }
 
   Future<void> loadFeaturedProducts() async {

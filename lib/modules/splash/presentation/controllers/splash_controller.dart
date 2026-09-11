@@ -5,10 +5,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../shared/services/local_auth_service.dart';
 
-class SplashController extends GetxController {
+class SplashController extends GetxController { 
   final GetStorage storage = GetStorage();
 
-  static const _brandDelay = Duration(milliseconds: 1800);
+  static const _brandDelay = Duration(milliseconds: 2000);
 
   @override
   void onReady() {

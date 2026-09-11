@@ -21,9 +21,9 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final name = controller.currentUser?.userMetadata?['full_name']
-        ?.toString()
-        .split(' ')
-        .first ??
+            ?.toString()
+            .split(' ')
+            .first ??
         '';
 
     return Scaffold(
@@ -40,10 +40,9 @@ class HomePage extends GetView<HomeController> {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  // Solid green block, rounded bottom corners.
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 60),
+                    padding: const EdgeInsets.fromLTRB(16, 30, 16, 60),
                     decoration: const BoxDecoration(
                       color: AppColors.primary,
                       borderRadius: BorderRadius.vertical(
@@ -95,10 +94,7 @@ class HomePage extends GetView<HomeController> {
                       ),
                     ),
                   ),
-
-                  
                   Positioned(
-
                     left: 16,
                     right: 16,
                     bottom: -16,
@@ -115,13 +111,12 @@ class HomePage extends GetView<HomeController> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
                 child: Container(
-                  //height: 130,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.accentWarm. withOpacity(.85),
+                        AppColors.accentWarm.withOpacity(.85),
                         AppColors.primaryLight,
                       ],
                       begin: Alignment.topLeft,
@@ -191,7 +186,7 @@ class HomePage extends GetView<HomeController> {
               child: SizedBox(
                 height: 40,
                 child: Obx(
-                      () => ListView.builder(
+                  () => ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     scrollDirection: Axis.horizontal,
                     itemCount: controller.categories.length + 1,
@@ -229,7 +224,8 @@ class HomePage extends GetView<HomeController> {
               ),
             ),
 
-            /// FEATURED / FRESH PICKS
+            
+           /// FEATURED / FRESH PICKS
             SliverToBoxAdapter(
               child: _SectionHeader(
                 title: "fresh_picks".tr,
@@ -241,7 +237,8 @@ class HomePage extends GetView<HomeController> {
                 if (controller.isLoading.value &&
                     controller.featuredProducts.isEmpty) {
                   return SizedBox(
-                    height: 220,
+                    // Increased fixed height to 285 to match ProductCard's mainAxisExtent
+                    height: 285, 
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       scrollDirection: Axis.horizontal,
@@ -249,7 +246,7 @@ class HomePage extends GetView<HomeController> {
                       itemBuilder: (_, __) => const Padding(
                         padding: EdgeInsets.only(right: 12),
                         child: SizedBox(
-                          width: 150,
+                          width: 160,
                           child: ShimmerBox(borderRadius: 18),
                         ),
                       ),
@@ -258,7 +255,8 @@ class HomePage extends GetView<HomeController> {
                 }
 
                 return SizedBox(
-                  height: 220,
+                  // Increased fixed height to 285 to eliminate RenderFlex overflow
+                  height: 285, 
                   child: ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     scrollDirection: Axis.horizontal,
@@ -267,7 +265,7 @@ class HomePage extends GetView<HomeController> {
                       return Padding(
                         padding: const EdgeInsets.only(right: 12),
                         child: SizedBox(
-                          width: 150,
+                          width: 160,
                           child: ProductCard(
                             product: controller.featuredProducts[index],
                           ),
@@ -285,58 +283,61 @@ class HomePage extends GetView<HomeController> {
             ),
 
             Obx(
-                  () => SliverPadding(
+              () => SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: controller.isLoading.value &&
-                    controller.products.isEmpty
+                        controller.products.isEmpty
                     ? SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                        (_, __) => const ShimmerBox(borderRadius: 20),
-                    childCount: 6,
-                  ),
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: .72,
-                  ),
-                )
+                        delegate: SliverChildBuilderDelegate(
+                          (_, __) => const ShimmerBox(borderRadius: 20),
+                          childCount: 6,
+                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          // Fixed pixel height instead of aspect ratio —
+                          // aspect ratio shrank cell height on narrower
+                          // phones and caused the card content to overflow.
+                          mainAxisExtent: 285,
+                        ),
+                      )
                     : SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                        (_, index) => ProductCard(
-                      product: controller.products[index],
-                    ),
-                    childCount: controller.products.length,
-                  ),
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: .72,
-                  ),
-                ),
+                        delegate: SliverChildBuilderDelegate(
+                          (_, index) => ProductCard(
+                            product: controller.products[index],
+                          ),
+                          childCount: controller.products.length,
+                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          mainAxisExtent: 285,
+                        ),
+                      ),
               ),
             ),
 
             /// PAGINATION
             Obx(
-                  () => SliverToBoxAdapter(
+              () => SliverToBoxAdapter(
                 child: controller.isLoadingMore.value
                     ? Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Center(
-                    child: SizedBox(
-                      width: 26,
-                      height: 26,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                )
+                        padding: const EdgeInsets.all(20),
+                        child: Center(
+                          child: SizedBox(
+                            width: 26,
+                            height: 26,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      )
                     : const SizedBox(height: 20),
               ),
             ),
@@ -372,9 +373,14 @@ class _SearchCard extends GetView<HomeController> {
       children: [
         Expanded(
           child: Container(
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
+              // Was missing — without an explicit color, the shadow
+              // could render against a transparent container while the
+              // TextField's own white fill shows through square corners
+              // underneath, causing a shadow/corner mismatch at the edges.
               color: AppColors.surface,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
+              borderRadius: const BorderRadius.all(Radius.circular(100)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(.10),
@@ -392,10 +398,7 @@ class _SearchCard extends GetView<HomeController> {
                     hintStyle: TextStyle(
                         color: AppColors.textSecondary, fontSize: 13),
                     prefixIcon:
-                    Icon(Icons.search, color: AppColors.textSecondary),
-                    // Voice search — was missing before. Not wired to
-                    // real speech-to-text yet, just the entry point;
-                    // flag if you want that built out.
+                        Icon(Icons.search, color: AppColors.textSecondary),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.mic_none_rounded,
                           color: AppColors.textSecondary),
@@ -427,14 +430,14 @@ class _SearchCard extends GetView<HomeController> {
                       children: [
                         Divider(height: 1, color: AppColors.border),
                         ...controller.searchSuggestions.map(
-                              (product) => ListTile(
+                          (product) => ListTile(
                             dense: true,
                             leading: Icon(Icons.search,
                                 size: 18, color: AppColors.textSecondary),
                             title: Text(
                               product['title'] ?? '',
                               style:
-                              AppTextStyles.body.copyWith(fontSize: 14),
+                                  AppTextStyles.body.copyWith(fontSize: 14),
                             ),
                             trailing: Text(
                               _formatSuggestionPrice(product['price']),
@@ -601,14 +604,14 @@ class _LocationLabel extends GetView<HomeController> {
       builder: (_) {
         return SafeArea(
           child: Obx(
-                () => ListView(
+            () => ListView(
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(vertical: 12),
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
                   child:
-                  Text('select_location'.tr, style: AppTextStyles.title),
+                      Text('select_location'.tr, style: AppTextStyles.title),
                 ),
                 ListTile(
                   leading: const Icon(Icons.public),
@@ -620,11 +623,11 @@ class _LocationLabel extends GetView<HomeController> {
                   },
                 ),
                 ...controller.cities.map(
-                      (city) => ListTile(
+                  (city) => ListTile(
                     leading: const Icon(Icons.location_on_outlined),
                     title: Text(city['name'] ?? ''),
                     subtitle:
-                    city['region'] != null ? Text(city['region']) : null,
+                        city['region'] != null ? Text(city['region']) : null,
                     selected: controller.selectedCity.value == city['id'],
                     onTap: () {
                       controller.selectCity(city['id']);

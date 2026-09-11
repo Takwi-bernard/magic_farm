@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../app/theme/app_colors.dart';
 import '../controllers/home_controller.dart';
 
-/// Matches the reference precisely this time: NOT one shared bar —
+/// Matches the reference precisely: NOT one shared bar —
 /// each tab is its own separate floating circle/pill with visible
 /// gaps between them. Selected tab expands into a green pill with an
 /// icon badge + label; every unselected tab is a plain gray circle,
@@ -17,32 +17,30 @@ class HomeBottomNavigation extends GetView<HomeController> {
     return Obx(() {
       final tabs = [
         (
-        icon: Icons.home_outlined,
-        label: 'home',
-        index: 0,
+          icon: Icons.home_outlined,
+          label: 'home',
+          index: 0,
         ),
-
         controller.isFarmer
             ? (
-        icon: Icons.add_circle_outline,
-        label: 'create_post',
-        index: 2,
-        )
+                icon: Icons.add_circle_outline,
+                label: 'create_post',
+                index: 2,
+              )
             : (
-        icon: Icons.shopping_bag_outlined,
-        label: 'orders',
-        index: 2,
+                icon: Icons.shopping_bag_outlined,
+                label: 'orders',
+                index: 2,
+              ),
+        (
+          icon: Icons.chat_bubble_outline,
+          label: 'messages',
+          index: 3,
         ),
         (
-        icon: Icons.chat_bubble_outline,
-        label: 'messages',
-        index: 3,
-        ),
-        (
-        icon: Icons.person_outline_rounded,
-        label: 'profile',
-
-        index: 4,
+          icon: Icons.person_outline_rounded,
+          label: 'profile',
+          index: 4,
         ),
       ];
 
@@ -88,8 +86,10 @@ class _NavBubble extends StatelessWidget {
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeOutCubic,
         height: 52,
-        padding: EdgeInsets.symmetric(horizontal: selected ? 14 : 0),
-        width: selected ? null : 52,
+        // Using explicit padding ensures a fixed total width of 52 when unselected (30 icon + 22 padding)
+        padding: EdgeInsets.symmetric(
+          horizontal: selected ? 14 : 11,
+        ),
         decoration: BoxDecoration(
           color: selected ? AppColors.primary : Colors.white60,
           borderRadius: BorderRadius.circular(26),
@@ -123,17 +123,17 @@ class _NavBubble extends StatelessWidget {
               curve: Curves.easeOut,
               child: selected
                   ? Padding(
-                padding: const EdgeInsets.only(left: 8, right: 2),
-                child: Text(
-                  label.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                  ),
-                ),
-              )
-                  : const SizedBox(width: 0, height: 0),
+                      padding: const EdgeInsets.only(left: 8, right: 2),
+                      child: Text(
+                        label.tr,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ),
           ],
         ),

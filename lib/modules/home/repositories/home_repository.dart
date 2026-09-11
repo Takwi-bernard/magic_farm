@@ -24,6 +24,7 @@ class HomeRepository {
     double? maxPrice,
     bool newestFirst = true,
   }) async {
+    // 1. Build initial query
     dynamic query = _client
         .from('products')
         .select('''
@@ -53,16 +54,12 @@ class HomeRepository {
             user_id
           )
         ''')
-        .eq('status', 'active')
-        .range(
-      page * pageSize,
-      page * pageSize + pageSize - 1,
-    );
+        .eq('status', 'active');
 
-    // Scopes the embedded favorites array to just the current user's
-    // row (if any), instead of pulling every user who ever favourited
-    // each product. Was previously unscoped — wasteful, and there's
-    // no reason the app needs to know who else favourited something.
+    // 2. Apply all conditional filters BEFORE pagination & ordering
+    // Note: If you want to show products that are NOT favorited by the user too,
+    // ensure you didn't mark favorites as inner join. 
+    // To filter the embedded list without dropping unfavorited products, query filters work best.
     if (_currentUserId != null) {
       query = query.eq('favorites.user_id', _currentUserId!);
     }
@@ -90,10 +87,16 @@ class HomeRepository {
       query = query.lte('price', maxPrice);
     }
 
-    query = query.order(
-      newestFirst ? 'created_at' : 'price',
-      ascending: !newestFirst,
-    );
+    // 3. Apply ordering and range/pagination LAST
+    query = query
+        .order(
+          newestFirst ? 'created_at' : 'price',
+          ascending: !newestFirst,
+        )
+        .range(
+          page * pageSize,
+          page * pageSize + pageSize - 1,
+        );
 
     final result = await query;
 
@@ -102,10 +105,6 @@ class HomeRepository {
 
   // ===========================
   // SEARCH SUGGESTIONS
-  //
-  // Deliberately separate from getProducts — runs on every keystroke
-  // (debounced), so it stays small and fast: 5 results, 3 columns,
-  // no joins.
   // ===========================
 
   Future<List<Map<String, dynamic>>> getSearchSuggestions(
@@ -158,9 +157,6 @@ class HomeRepository {
         .eq('status', 'active')
         .eq('is_featured', true);
 
-    // Was missing the favorites join entirely before — meant the
-    // heart icon could never show as filled anywhere in the "Fresh
-    // Picks" row, regardless of actual favorite status.
     if (_currentUserId != null) {
       query = query.eq('favorites.user_id', _currentUserId!);
     }
@@ -199,7 +195,6 @@ class HomeRepository {
         .eq('status', 'active')
         .eq('city_id', cityId);
 
-    // Same missing-join bug as getFeaturedProducts, fixed the same way.
     if (_currentUserId != null) {
       query = query.eq('favorites.user_id', _currentUserId!);
     }
@@ -284,12 +279,6 @@ class HomeRepository {
         ''')
         .eq('user_id', userId);
 
-    // Every nested product's own `favorites` embed now includes this
-    // same user's row too (it has to — that's how it ended up in this
-    // query result in the first place), so ProductCard's heart shows
-    // correctly filled here without any special-casing — previously
-    // this nested select didn't include the favorites join at all,
-    // so hearts on the Favorites page itself showed as empty.
     return List<Map<String, dynamic>>.from(result);
   }
 

@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../controllers/onboarding_controller.dart';
 
-class OnboardingNextButton
-    extends GetView<OnboardingController> {
+class OnboardingNextButton extends GetView<OnboardingController> {
   const OnboardingNextButton({super.key});
 
   @override
@@ -16,12 +15,20 @@ class OnboardingNextButton
       return AnimatedContainer(
         duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
-        width: last ? 180 : 60,
+        width: last ? 190 : 60,
         height: 60,
-
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(.35),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
         child: ElevatedButton(
           onPressed: controller.next,
-
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             elevation: 0,
@@ -29,10 +36,8 @@ class OnboardingNextButton
               borderRadius: BorderRadius.circular(30),
             ),
           ),
-
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-
             child: last
                 ? Text(
                     "get_started".tr,

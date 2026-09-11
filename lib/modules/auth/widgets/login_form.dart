@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/routes/app_routes.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../controllers/auth_controller.dart';
 
 class LoginForm extends GetView<AuthController> {
@@ -23,7 +23,10 @@ class LoginForm extends GetView<AuthController> {
             decoration: InputDecoration(
               labelText: "email".tr,
               hintText: "email_hint".tr,
-              prefixIcon: const Icon(Icons.email_outlined ,color: AppColors.primary,),
+              prefixIcon: const Icon(
+                Icons.email_outlined,
+                color: AppColors.primary,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -53,14 +56,17 @@ class LoginForm extends GetView<AuthController> {
 
           /// Password
           Obx(
-                () => TextFormField(
+            () => TextFormField(
               controller: controller.passwordController,
               obscureText: controller.hideLoginPassword.value,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
                 labelText: "password".tr,
                 hintText: "password_hint".tr,
-                prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary,),
+                prefixIcon: const Icon(
+                  Icons.lock_outline,
+                  color: AppColors.primary,
+                ),
                 suffixIcon: IconButton(
                   onPressed: controller.toggleLoginPassword,
                   icon: Icon(
@@ -106,12 +112,12 @@ class LoginForm extends GetView<AuthController> {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                // Was a hardcoded '/forgot-password' string before —
-                // using the AppRoutes constant instead, so a future
-                // route rename can't silently desync this button.
                 Get.toNamed(AppRoutes.forgotPassword);
               },
-              child: Text("forgot_password".tr,style: TextStyle(fontSize: 16),),
+              child: Text(
+                "forgot_password".tr,
+                style: const TextStyle(fontSize: 16),
+              ),
             ),
           ),
 
@@ -122,9 +128,9 @@ class LoginForm extends GetView<AuthController> {
             width: double.infinity,
             height: 55,
             child: Obx(
-                  () => ElevatedButton(
+              () => ElevatedButton(
                 onPressed:
-                controller.isLoading.value ? null : controller.login,
+                    controller.isLoading.value ? null : controller.login,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
@@ -135,21 +141,21 @@ class LoginForm extends GetView<AuthController> {
                 ),
                 child: controller.isLoading.value
                     ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
-                )
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
+                      )
                     : Text(
-                  "login".tr.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
+                        "login".tr.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
               ),
             ),
           ),
